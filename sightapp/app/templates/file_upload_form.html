@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Camera_Upload</title>
+    <style>
+    /* CSS comes here */
+    body{
+        background-color : lightgray;
+    }
+    #video {
+        
+        width: 290px;
+        height: 300px;
+    }
+
+    
+
+
+    #canvas {
+        display: none;
+    }
+
+    .camera {
+        width: 300px;
+        display: inline-block;
+    }
+
+    .output {
+        width: 300px;
+        display: inline-block;
+    }
+
+    #startbutton {
+        display: block;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        bottom: 36px;
+        padding: 5px;
+        background-color: #6a67ce;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 1.0);
+        cursor: pointer;
+    }
+    #upload{
+        display: block;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+       
+        padding: 5px;
+        background-color: green;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 1.0);
+        cursor: pointer;
+
+    }
+
+    .contentarea {
+        font-size: 16px;
+        font-family: Arial;
+        text-align: center;
+    }
+    </style>
+
+    <script type="text/javascript">
+    alert('hello');
+    /* JS comes here */
+    (function() {
+        
+// List cameras and microphones.
+function alpha(){
+    
+var i=1
+
+if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+  console.log("enumerateDevices() not supported.");
+  return;
+}
+
+// List cameras and microphones.
+
+navigator.mediaDevices.enumerateDevices()
+.then(function(devices) {
+  devices.forEach(function(device) {
+    console.log(device.kind + ": " + device.label +
+                " id = " + device.deviceId);
+  });
+})
+.catch(function(err) {
+  console.log(err.name + ": " + err.message);
+});
+
+
+navigator.mediaDevices.enumerateDevices().then(function(devices){
+    
+
+    
+    
+    devices.forEach(function(device) {
+      if(device.kind=="videoinput"){
+          
+          console.log(device.kind + ": " + device.label +
+                " id = " + device.deviceId);
+                i=i+1
+                if(i>2){
+                    console.log(i)
+                    console.log("bjks")
+                    x={facingMode: {exact: 'environment'}}
+                }
+                else{
+                    
+                    x='true'
+                }
+                startup()
+      }      
+                
+  });
+})
+.catch(function(err) {
+  console.log(err.name + ": " + err.message);
+});
+
+}
+          
+        var width = 300; // We will scale the photo width to this
+        var height = 0; // This will be computed based on the input stream
+
+        var streaming = false;
+
+        var video = null;
+        var canvas = null;
+        var photo = null;
+        var startbutton = null;
+        var upload=null
+
+        function startup() {
+            
+            console.log("alpha")
+            video = document.getElementById('video');
+            canvas = document.getElementById('canvas');
+            photo = document.getElementById('photo');
+            startbutton = document.getElementById('startbutton');
+            upload=document.getElementById('upload')
+            
+ 
+
+            navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: x
+                 
+                })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    
+                    video.play();
+                    
+                })
+                .catch(function(err) {
+                    console.log("An error occurred: " + err);
+                });
+
+            video.addEventListener('canplay', function(ev) {
+                if (!streaming) {
+                    height = video.videoHeight / (video.videoWidth / width);
+
+                    if (isNaN(height)) {
+                        height = width / (4 / 3);
+                    }
+
+                    video.setAttribute('width', width);
+                    video.setAttribute('height', height);
+                    canvas.setAttribute('width', width);
+                    canvas.setAttribute('height', height);
+                    streaming = true;
+                }
+            }, false);
+
+            startbutton.addEventListener('click', function(ev) {
+                takepicture();
+                ev.preventDefault();
+            }, false);
+
+            //clearphoto();
+            upload.addEventListener('click', function(ev) {
+                upload1();
+                ev.preventDefault();
+            }, false);
+
+            
+        }
+
+
+        function clearphoto() {
+            var context = canvas.getContext('2d');
+            context.fillStyle = "#AAA";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            var data = canvas.toDataURL('image/png');
+            photo.setAttribute('src', data);
+        }
+
+        function takepicture() {
+            var context = canvas.getContext('2d');
+            if (width && height) {
+                canvas.width = width;
+                canvas.height = height;
+                context.drawImage(video, 0, 0, width, height);
+
+                var data = canvas.toDataURL('image/png');
+                photo.setAttribute('src', data);
+                // display results in page
+                document.getElementById('photo').innerHTML = 
+                '<img id="image" src="'+data+'"/>';
+            } else {
+                clearphoto();
+            }
+        }
+window.appResumeEvent = new Event('load');
+window.addEventListener('load', alpha, false);
+//window.addEventListener('load', startup, false);
+
+  })(); 
+
+function upload2() {
+    
+    console.log("Uploading...")
+    var xhttp = new XMLHttpRequest();
+    var image = document.getElementById('image').src;
+    
+    var form = document.getElementById('myForm');
+    
+    var formData = new FormData(form);
+    
+    formData.append("file", image);
+    
+    var xmlhttp = new XMLHttpRequest();
+    
+    xhttp.open("POST", "/success",true);
+    
+
+    // check when state changes, 
+    xhttp.onreadystatechange = function() {
+        
+        console.log(xhttp.readyState)
+        console.log(xhttp.status)
+        console.log("response",xhttp.responseText)
+        console.log("iewd")
+
+    if(xhttp.readyState == 4 && xhttp.status == 200) {
+        
+        location.href = "/success"
+        
+        
+        }
+    
+    }
+    
+    xhttp.send(formData);
+    
+    
+    //console.log(formData.get('file'));
+    //console.log(formData.get('userID'));
+    
+
+}
+
+
+function upload1() {
+    upload2()
+  
+}      
+    
+
+    </script>
+
+    
+</head>
+
+<body>
+    <div class="contentarea">
+        <h1>
+            Welcome to Sight App...
+        </h1>
+        <br>
+        <h2>
+            Capture the image here
+        </h2>
+        <div class="camera">
+            <video id="video">Video stream not available.</video>
+        </div>
+        <div><button id="startbutton">Take photo</button></div>
+        <canvas id="canvas"></canvas>
+        <br>
+        <h2>
+            Upload the captured image
+        </h2
+        <div class="output">
+            <img id="photo" alt="The screen capture will appear in this box.">
+        </div>
+        <br>
+        <form action="/success" method="post",  enctype="multipart/form-data" id="myForm">
+        
+        <input id="upload" type="button" value="upload">
+        </form>
+        
+    </div>
+
+
+</body>
+
+</html>
+
+

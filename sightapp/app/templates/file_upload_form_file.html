@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Camera_Upload</title>
+    <style>
+    /* CSS comes here */
+    body{
+        background-color : lightgray;
+    }
+    
+
+
+    #upload{
+        display: block;
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        width:100px;
+        
+       
+        padding: 5px;
+        background-color: green;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 1.0);
+        cursor: pointer;
+
+    }
+
+    .contentarea {
+        font-size: 16px;
+        font-family: Arial;
+        text-align: center;
+    }
+    .file {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  
+}
+   
+    .alpha101{
+  background-color:lightblue;
+  
+  padding-left:100px;
+  padding-right:100px;
+  padding-top:40px;
+  padding-bottom:40px;
+  border: 10px solid lightblue;
+  
+}
+    </style>
+
+    <script type="text/javascript">
+   
+    
+    </script>
+
+    
+</head>
+
+<body>
+    <div class="contentarea">
+        <h1>
+            Welcome to Sight App...
+        </h1>
+        <br>
+        <br>
+        <br>
+        <h2>
+           
+            
+
+        <form action="https://sightapp1002.herokuapp.com/success" method="get",  enctype="multipart/form-data">
+            
+        
+            <input type="file" name="file" id="file" class="file" accept="image/*" capture="camera"/>
+            <label class="alpha101" for="file">Select file</label>
+            <br>
+            <br>
+        
+        
+        <input id="upload" type="submit" value="upload">
+        </form>
+        
+    </div>
+
+
+</body>
+
+</html>
+
+
